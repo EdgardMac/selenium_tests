@@ -1,7 +1,10 @@
-# Selenium-specific requirements
+# Selenium core only - remove problematic packages
 selenium==4.15.0
-webdriver-manager==4.0.1
-pytest-selenium==2.0.1
 
-# For headless testing in CI
-pyvirtualdisplay==3.0
+# Lightweight testing
+pytest-html==4.0.2
+pytest-xdist==3.3.1
+
+# Removed problematic packages:
+# pytest-selenium (causes distutils error)
+# webdriver-manager (not needed for Termux)

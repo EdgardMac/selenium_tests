@@ -2,6 +2,11 @@
 *.json
 *.html
 *.png
+test_results/
+network_test_results.json
+ci_test_results.json
+simple_test_results.json
+report_network.html
 
 # Python
 __pycache__/
@@ -11,6 +16,16 @@ __pycache__/
 .Python
 env/
 pip-log.txt
+.pytest_cache/
+.coverage
 
 # Selenium
 geckodriver.log
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Termux
+termux-setup-storage

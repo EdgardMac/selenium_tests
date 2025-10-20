@@ -1,31 +1,38 @@
-#!/bin/bash
-echo "🔧 Setting up Selenium in Termux..."
+#!/data/data/com.termux/files/usr/bin/bash
+echo "🔧 Termux Setup Script"
+echo "======================"
 
-# Update packages
-pkg update && pkg upgrade -y
+# Create necessary directories
+mkdir -p test_results
 
-# Install required system packages
-pkg install -y python rust openjdk-17 wget
+# Update and install system packages
+echo "📦 Updating packages..."
+pkg update -y && pkg upgrade -y
 
-# Install Python packages
+echo "📦 Installing system dependencies..."
+pkg install -y python git wget
+
+# Install Python requirements
+echo "🐍 Installing Python packages..."
 pip install --upgrade pip
-pip install selenium==4.15.0 requests beautifulsoup4
+pip install -r requirements/requirements.txt
 
-# Install Chrome and ChromeDriver for Termux
-echo "📥 Installing Chrome WebView..."
-pkg install -y x11-repo
-pkg install -y chromium
+# Try to install Selenium components
+echo "🚀 Attempting Selenium setup..."
+if pkg install -y firefox geckodriver 2>/dev/null; then
+    pip install -r requirements/requirements_selenium.txt
+    echo "✅ Selenium components installed"
+else
+    echo "⚠️  Selenium not available, using requests-based tests only"
+fi
 
-# Alternative: Use geckodriver (Firefox) which works better in Termux
-echo "📥 Setting up GeckoDriver (Firefox)..."
-wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux-aarch64.tar.gz
-tar -xzf geckodriver-v0.34.0-linux-aarch64.tar.gz
-chmod +x geckodriver
-mv geckodriver $PREFIX/bin/
+# Make scripts executable
+echo "🔧 Making scripts executable..."
+chmod +x scripts/*.py 2>/dev/null || true
 
-# Create test directory
-mkdir -p ~/selenium-tests
-cd ~/selenium-tests
-
+echo ""
 echo "✅ Setup complete!"
-echo "🚀 Run: python run_tests.py"
+echo "🎯 Run: ./run_ci_tests.sh"
+echo "🔍 Or test individually:"
+echo "   python scripts/selenium_ci.py --check-only"
+echo "   python scripts/network_tests.py"

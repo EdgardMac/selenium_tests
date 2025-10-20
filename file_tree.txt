@@ -1,0 +1,22 @@
+selenium_tests/
+├── .github/
+│   └── workflows/
+│       ├── termux-ci.yml
+│       └── selenium-tests.yml
+├── scripts/
+│   ├── __init__.py
+│   ├── selenium_ci.py
+│   └── network_tests.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_selenium.py
+│   └── test_network.py
+├── requirements/
+│   ├── requirements.txt
+│   └── requirements_selenium.txt
+├── .gitignore
+├── pytest.ini
+├── setup_termux.sh
+├── run_ci_tests.sh
+├── run_simple_tests.py
+└── README.md
