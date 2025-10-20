@@ -1,0 +1,41 @@
+name: Selenium Integration Tests
+
+on:
+  workflow_dispatch:  # Manual trigger
+  schedule:
+    - cron: '0 6 * * 0'  # Weekly on Sunday
+
+jobs:
+  selenium-comprehensive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y firefox geckodriver xvfb
+    
+    - name: Install Python dependencies
+      run: |
+        pip install -r requirements/requirements_selenium.txt
+        pip install pyvirtualdisplay
+    
+    - name: Run comprehensive Selenium tests
+      run: |
+        xvfb-run -a python scripts/selenium_ci.py --comprehensive
+    
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: selenium-comprehensive-results
+        path: |
+          selenium_test_results.json
+          selenium_screenshot.png

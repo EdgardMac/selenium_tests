@@ -1,0 +1,81 @@
+name: Termux CI Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+
+jobs:
+  termux-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements/requirements.txt
+        pip install pytest pytest-html
+    
+    - name: Run network tests
+      run: |
+        python -m pytest tests/test_network.py -v --html=report_network.html --self-contained-html
+    
+    - name: Upload network test report
+      uses: actions/upload-artifact@v4
+      with:
+        name: network-test-report-${{ matrix.python-version }}
+        path: report_network.html
+    
+    - name: Run Selenium compatibility check
+      run: |
+        python scripts/selenium_ci.py --check-only
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.python-version }}
+        path: ci_test_results.json
+
+  selenium-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Selenium dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y firefox geckodriver
+        pip install -r requirements/requirements_selenium.txt
+    
+    - name: Run Selenium tests
+      run: |
+        python -m pytest tests/test_selenium.py -v --html=report_selenium.html --self-contained-html
+    
+    - name: Upload Selenium test report
+      uses: actions/upload-artifact@v4
+      with:
+        name: selenium-test-report
+        path: report_selenium.html

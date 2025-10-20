@@ -1,0 +1,7 @@
+# Selenium-specific requirements
+selenium==4.15.0
+webdriver-manager==4.0.1
+pytest-selenium==2.0.1
+
+# For headless testing in CI
+pyvirtualdisplay==3.0

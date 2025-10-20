@@ -1,14 +1,36 @@
-# Selenium Termux Test
+# Selenium Tests - GitHub-Centric Workflow
 
-A complete Selenium WebDriver test suite designed to run in Termux on Android.
+A CI/CD-ready Selenium testing framework that works in GitHub Actions and Termux.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-### 1. Clone and Setup
+- **GitHub Actions Integration** - Automated testing on push/PR/schedule
+- **Multi-Environment Support** - Works in GitHub Actions, Termux, and local
+- **CI/CD Pipeline** - Automated test reports and artifacts
+- **Dual Testing Strategy** - Selenium + requests-based fallback
+
+## 📊 GitHub Actions
+
+The repository includes two workflows:
+
+1. **Termux CI Tests** - Runs on every push/PR with matrix testing
+2. **Selenium Integration Tests** - Manual/weekly comprehensive tests
+
+## 🛠️ Local/Termux Usage
+
 ```bash
-git clone https://github.com/your-username/selenium-termux-test.git
-cd selenium-termux-test
+# Clone repository
+git clone https://github.com/your-username/selenium_tests.git
+cd selenium_tests
 
-# Run setup script (installs dependencies)
-chmod +x setup_termux.sh
-./setup_termux.sh
+# Setup environment
+./scripts/setup_termux.sh
+
+# Run CI test suite
+./scripts/run_ci_tests.sh
+
+# Check Selenium availability
+python scripts/selenium_ci.py --check-only
+
+# Run specific tests
+python -m pytest tests/test_network.py -v
